@@ -10,13 +10,13 @@ import (
 
 func main() {
 	// 连接到 TCP 服务端
-	conn, err := net.Dial("tcp", "localhost:8081")
+	conn, err := net.Dial("tcp", "172.28.125.40:443")
 	if err != nil {
 		fmt.Println("Error connecting:", err)
 		os.Exit(1)
 	}
 	defer conn.Close()
-
+	fmt.Println("Connect succeed!")
 	// 持续接受用户输入直到用户选择退出
 	for {
 		// 读取用户输入
@@ -31,6 +31,7 @@ func main() {
 		}
 
 		// 打印发送的原始字节数据
+		fmt.Printf("Sending data (Origion msg): %s\n", message)
 		fmt.Printf("Sending data (raw bytes): %v\n", []byte(message))
 
 		// 向服务端发送用户输入的消息
@@ -53,5 +54,6 @@ func main() {
 
 		// 打印服务端的响应
 		fmt.Println("Server response:", string(buffer))
+
 	}
 }

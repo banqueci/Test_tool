@@ -10,7 +10,7 @@ import (
 func main() {
 	// 启动 UDP 服务端，监听端口 8080
 	// 使用 :8080 来监听所有可用的网络接口
-	address, err := net.ResolveUDPAddr("udp", "localhost:8080")
+	address, err := net.ResolveUDPAddr("udp", "localhost:8090")
 	if err != nil {
 		fmt.Println("Error resolving address:", err)
 		os.Exit(1)
@@ -23,10 +23,11 @@ func main() {
 	}
 	defer conn.Close()
 
-	fmt.Println("UDP Server listening on localhost:8080")
+	fmt.Println("UDP Server listening on localhost:8090")
 
 	buffer := make([]byte, 1024)
 	for {
+
 		// 从客户端接收数据
 		n, addr, err := conn.ReadFromUDP(buffer)
 		if err != nil {
@@ -42,9 +43,16 @@ func main() {
 
 		// 向客户端发送响应
 		message := "Message received"
+
+		//_, err = io.Copy(conn, bytes.NewBuffer([]byte(message)))
+		//if err != nil {
+		//	fmt.Println("Error writing to UDP:", err)
+		//	return
+		//}
 		_, err = conn.WriteToUDP([]byte(message), addr)
 		if err != nil {
 			fmt.Println("Error sending to client:", err)
 		}
+		fmt.Println("Send message succeed:", message)
 	}
 }

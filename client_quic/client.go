@@ -8,20 +8,33 @@ import (
 	"github.com/quic-go/quic-go"
 	"log"
 	"os"
+	"time"
 )
 
 func main() {
+	serverAddr := "172.28.125.40:443"
+
 	// 创建上下文
-	ctx := context.Background()
+	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	defer cancel()
 
 	// QUIC 配置（可选）
-	quicConfig := &quic.Config{}
+	quicConfig := &quic.Config{
+		// 客户端支持的QUIC协议版本
+		//Versions: []quic.VersionNumber{
+		//	quic.Version1,       // QUIC v1
+		//	quic.VersionDraft29, // Draft 29
+		//},
+	}
 
 	// 建立一个 QUIC 会话
-	session, err := quic.DialAddr(ctx, "localhost:4242", &tls.Config{InsecureSkipVerify: true}, quicConfig)
+	//session, err := quic.DialAddr(ctx, "localhost:4242", &tls.Config{InsecureSkipVerify: true}, quicConfig)
+	session, err := quic.DialAddr(ctx, serverAddr, &tls.Config{InsecureSkipVerify: true}, quicConfig)
 	if err != nil {
 		log.Fatalf("Failed to connect to server: %v\n", err)
 	}
+	fmt.Printf("连接到服务器成功，使用的QUIC版本: %v\n", session.ConnectionState().SupportsDatagrams)
+
 	fmt.Println("Connected to server. Type your messages below:")
 
 	// 打开一个流

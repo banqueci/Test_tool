@@ -6,11 +6,14 @@ import (
 	"fmt"
 	"net"
 	"os"
+	"strings"
 )
 
 func main() {
 	// 解析服务器的地址
-	address, err := net.ResolveUDPAddr("udp", "localhost:8080")
+	//address, err := net.ResolveUDPAddr("udp", "localhost:8090")
+	serverAddr := "172.28.125.40:443"
+	address, err := net.ResolveUDPAddr("udp", serverAddr)
 	if err != nil {
 		fmt.Println("Error resolving address:", err)
 		os.Exit(1)
@@ -30,20 +33,20 @@ func main() {
 		reader := bufio.NewReader(os.Stdin)
 		fmt.Print("Enter message to send to server_tcp (or type 'exit' to quit): ")
 		message, _ := reader.ReadString('\n')
-
+		str := strings.TrimSuffix(message, "\n")
 		// 如果输入 "exit" 则退出
-		if message == "exit\n" {
+		if str == "exit\n" {
 			fmt.Println("Exiting client...")
 			break
 		}
 
 		// 向服务端发送数据
-		_, err := conn.Write([]byte(message))
+		_, err := conn.Write([]byte(str))
 		if err != nil {
 			fmt.Println("Error writing to server_tcp:", err)
 			return
 		}
-
+		fmt.Println("Message sent to server_udp:", str)
 		// 接收服务端的响应
 		buffer := make([]byte, 1024)
 		n, err := conn.Read(buffer)

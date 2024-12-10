@@ -8,15 +8,15 @@ import (
 )
 
 func main() {
-	// 启动 TCP 服务端，监听端口 8080
-	listen, err := net.Listen("tcp", "localhost:8081")
+	// 启动 TCP 服务端，监听端口 8082
+	listen, err := net.Listen("tcp", "0.0.0.0:18080")
 	if err != nil {
 		fmt.Println("Error listening:", err)
 		os.Exit(1)
 	}
 	defer listen.Close()
 
-	fmt.Println("Server listening on localhost:8081")
+	fmt.Println("Server listening on localhost:18080")
 
 	// 接受客户端连接，并持续处理每个连接
 	for {
